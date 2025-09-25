@@ -5,59 +5,60 @@
   <title>Phát Nhạc</title>
   <style>
     body {
-      background-color: #FFFFFF; /* màu nền */
+      background-color: #DB2615; /* nền trắng */
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
     }
-    .container {
-      position: relative;
-      display: inline-block;
-    }
+
     .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(221, 50, 50, 100);
+      background-color: #ff0000; /* nút màu đỏ */
       border: none;
       border-radius: 50%;
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: relative;
     }
+
     .play-button:after {
       content: '';
       display: block;
       width: 0;
       height: 0;
-      border-left: 20px solid #000;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
+      border-left: 30px solid #ffffff; /* màu tam giác play */
+      border-top: 18px solid transparent;
+      border-bottom: 18px solid transparent;
       margin-left: 5px;
     }
+
     audio {
       display: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Đường dẫn ảnh -->
-    <img src="14e18d29-474b-457c-b99d-918470dfb4f8.png" alt="Player Image">
-    <!-- Nút Play -->
-    <button class="play-button" onclick="document.getElementById('audio').play()"></button>
-  </div>
+  <!-- Nút Play -->
+  <button class="play-button" onclick="toggleAudio()"></button>
 
-  <!-- File audio của bạn -->
+  <!-- File audio -->
   <audio id="audio" src="Waveletter.mp3"></audio>
 
+  <script>
+    const audio = document.getElementById('audio');
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+  </script>
 </body>
 </html>
-
