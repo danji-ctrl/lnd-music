@@ -3,12 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <title>Phát Nhạc</title>
+  <style>
+    body {
+      background-color: #FFFFFF; /* màu nền */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      position: relative;
+      display: inline-block;
+    }
+    .container img {
+      width: 500px; /* bạn chỉnh kích thước ảnh */
+      border-radius: 12px;
+    }
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .play-button:after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 20px solid #000;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      margin-left: 5px;
+    }
+    audio {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h2>Wave Letter</h2>
-  <audio controls>
-    <source src="Waveletter.mp3" type="audio/mpeg">
-    Trình duyệt không hỗ trợ audio.
-  </audio>
+  <div class="container">
+    <!-- Đường dẫn ảnh -->
+    <img src="14e18d29-474b-457c-b99d-918470dfb4f8.png" alt="Player Image">
+    <!-- Nút Play -->
+    <button class="play-button" onclick="document.getElementById('audio').play()"></button>
+  </div>
+
+  <!-- File audio của bạn -->
+  <audio id="audio" src="Waveletter.mp3"></audio>
+
 </body>
 </html>
+
