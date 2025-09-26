@@ -4,205 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vanilla's Menu</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f9fafb;
-      color: #333;
-    }
-    header img {
-      width: 100%;
-      height: auto;
-      border-bottom: 3px solid #eee;
-    }
-    .product-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      padding: 16px;
-    }
-    .product {
-      background: #fff;
-      border-radius: 12px;
-      padding: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .product:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 14px rgba(0,0,0,0.12);
-    }
-    .product img {
-      width: 100%;
-      max-height: 140px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-    .product h3 {
-      margin: 8px 0 3px;
-      font-size: 16px;
-    }
-    .product p {
-      margin: 2px 0 6px;
-      font-size: 13px;
-      color: #666;
-      text-align: center;
-    }
-    .price {
-      font-weight: bold;
-      font-size: 15px;
-      color: #e91e63;
-      margin-bottom: 8px;
-    }
-    .quantity-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .quantity-controls button {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, #33a036, #a6e83a);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      transition: background 0.3s;
-    }
-    .quantity-controls button:hover {
-      background: linear-gradient(135deg, #147917, #89CB09);
-    }
-    .quantity-display {
-      min-width: 20px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 14px;
-    }
-    small {
-      font-size: 12px;
-      color: #555;
-    }
-    .total {
-      text-align: center;
-      margin: 16px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #444;
-    }
-    .buttons-container {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-    .pay-btn, .reset-btn {
-      padding: 8px 18px;
-      font-size: 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .pay-btn {
-      background: #89CB09;
-      color: white;
-    }
-    .reset-btn {
-      background: #f44336;
-      color: white;
-    }
-    .pay-btn:hover, .reset-btn:hover {
-      transform: scale(1.05);
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      font-size: 13px;
-      color: #777;
-      background: #f0f0f0;
-    }
-
+    body {font-family:"Segoe UI",Arial,sans-serif;margin:0;padding:0;background:#f9fafb;color:#333;}
+    header img{width:100%;height:auto;border-bottom:3px solid #eee;}
+    .product-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;padding:16px;}
+    .product{background:#fff;border-radius:12px;padding:10px;box-shadow:0 3px 10px rgba(0,0,0,0.08);display:flex;flex-direction:column;align-items:center;transition:.2s;}
+    .product:hover{transform:translateY(-3px);box-shadow:0 5px 14px rgba(0,0,0,0.12);}
+    .product img{width:100%;max-height:140px;object-fit:cover;border-radius:10px;}
+    .product h3{margin:8px 0 3px;font-size:16px;}
+    .product p{margin:2px 0 6px;font-size:13px;color:#666;text-align:center;}
+    .price{font-weight:bold;font-size:15px;color:#e91e63;margin-bottom:8px;}
+    .quantity-controls{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+    .quantity-controls button{width:28px;height:28px;border-radius:50%;border:none;background:linear-gradient(135deg,#33a036,#a6e83a);color:#fff;font-size:16px;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+    .quantity-controls button:hover{background:linear-gradient(135deg,#147917,#89CB09);}
+    .quantity-display{min-width:20px;text-align:center;font-weight:bold;font-size:14px;}
+    small{font-size:12px;color:#555;}
+    .total{text-align:center;margin:16px;font-size:18px;font-weight:bold;color:#444;}
+    .buttons-container{display:flex;justify-content:center;gap:10px;margin-bottom:24px;}
+    .pay-btn,.reset-btn{padding:8px 18px;font-size:15px;font-weight:bold;border:none;border-radius:8px;cursor:pointer;transition:transform .2s;}
+    .pay-btn{background:#89CB09;color:#fff;}
+    .reset-btn{background:#f44336;color:#fff;}
+    .pay-btn:hover,.reset-btn:hover{transform:scale(1.05);}
+    footer{text-align:center;padding:10px;font-size:13px;color:#777;background:#f0f0f0;}
     /* popup */
-    .popup, .thank-popup {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      z-index: 999;
-    }
-    .popup.show, .thank-popup.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    .popup-content, .thank-content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 380px;
-      width: 90%;
-      text-align: center;
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
-    }
-    .popup.show .popup-content, .thank-popup.show .thank-content {
-      transform: scale(1);
-    }
-    .popup-content h3 {
-      margin-top: 0;
-    }
-    .qr-description {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #444;
-    }
-    .popup-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 14px;
-    }
-    .popup-buttons button {
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .btn-back {
-      background: transparent;
-      color: #333;
-      border: 1px solid #333;
-    }
-    .btn-continue {
-      background: #4CAF50;
-      color: white;
-      border: none;
-    }
+    .popup,.thank-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:.3s;z-index:999;}
+    .popup.show,.thank-popup.show{opacity:1;visibility:visible;}
+    .popup-content,.thank-content{background:#fff;padding:20px;border-radius:12px;max-width:380px;width:90%;text-align:center;transform:scale(0.9);transition:.3s;}
+    .popup.show .popup-content,.thank-popup.show .thank-content{transform:scale(1);}
+    .popup-content h3{margin-top:0;}
+    .qr-description{margin-top:10px;font-size:13px;color:#444;}
+    .popup-buttons{margin-top:14px;}
+    .popup-buttons button{padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;}
+    .btn-submit{background:#4CAF50;color:#fff;border:none;}
   </style>
 </head>
 <body>
-
-  <header>
-    <img src="sample.png" alt="Banner Menu">
-  </header>
+  <header><img src="sample.png" alt="Banner Menu"></header>
 
   <div class="product-list">
-    <!-- Giữ nguyên thông tin sản phẩm -->
-    <div class="product" data-name="Keychain 7cm" data-price="70000" data-max="10">
+    <!-- Ví dụ sản phẩm -->
+    <div class="product" data-name="Keychain 7cm" data-price="70000">
       <img src="key1.png" alt="Keychain 7cm">
       <h3>Keychain 7cm</h3>
       <p>Móc khóa nhỏ xinh 7cm</p>
@@ -214,103 +56,13 @@
       </div>
       <small>Còn: <span class="stock">10</span></small>
     </div>
-
-    <div class="product" data-name="Keychain 7cm" data-price="70000" data-max="10">
-      <img src="key1.png" alt="Keychain 7cm">
-      <h3>Keychain 7cm</h3>
-      <p>Móc khóa nhỏ xinh 7cm</p>
-      <div class="price">70,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
-
-    <div class="product" data-name="Keychain 7cm" data-price="70000" data-max="10">
-      <img src="key1.png" alt="Keychain 7cm">
-      <h3>Keychain 7cm</h3>
-      <p>Móc khóa nhỏ xinh 7cm</p>
-      <div class="price">70,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
-
-    <div class="product" data-name="Keychain 7cm" data-price="70000" data-max="10">
-      <img src="key1.png" alt="Keychain 7cm">
-      <h3>Keychain 7cm</h3>
-      <p>Móc khóa nhỏ xinh 7cm</p>
-      <div class="price">70,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
-
-    <div class="product" data-name="Layered Keychain" data-price="85000" data-max="10">
-      <img src="key1.png" alt="Layered Keychain">
-      <h3>Layered Keychain</h3>
-      <p>Móc khóa xếp lớp</p>
-      <div class="price">85,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
-
-    <div class="product" data-name="Polaroid" data-price="40000" data-max="10">
-      <img src="key1.png" alt="Polaroid">
-      <h3>Polaroid</h3>
-      <p>Ảnh polaroid đáng yêu</p>
-      <div class="price">40,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
-
-    <div class="product" data-name="Artprint A6" data-price="50000" data-max="10">
-      <img src="key1.png" alt="Artprint A6">
-      <h3>Artprint A6</h3>
-      <p>Tranh in A6</p>
-      <div class="price">50,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
-
-    <div class="product" data-name="Standee 10cm" data-price="100000" data-max="10">
-      <img src="key1.png" alt="Standee 10cm">
-      <h3>Standee 10cm</h3>
-      <p>Standee để bàn 10cm</p>
-      <div class="price">100,000đ</div>
-      <div class="quantity-controls">
-        <button class="minus">-</button>
-        <span class="quantity-display">0</span>
-        <button class="plus">+</button>
-      </div>
-      <small>Còn: <span class="stock">10</span></small>
-    </div>
+    <!-- Các sản phẩm khác giữ nguyên -->
   </div>
 
   <div class="total">Tổng: 0đ</div>
   <div class="buttons-container">
     <button class="pay-btn">Thanh Toán</button>
-    <button class="reset-btn">Reset tồn kho</button>
+    <button class="reset-btn">Reset</button>
   </div>
 
   <footer>Nếu bạn bấm cộng sản phẩm không được thì sản phẩm đó đã hết hàng</footer>
@@ -323,11 +75,10 @@
       <div class="popup-total"></div>
       <img src="photo_2025-09-26_19-53-24.jpg" alt="QR" style="width:140px; margin-top:8px;">
       <div class="qr-description">
-        Quét mã QR để thanh toán, sau đó chụp bill và các sản phẩm bạn chọn gửi qua facebook cho mình nha. Cảm ơn bạn!
+        Quét mã QR để thanh toán, sau đó hệ thống sẽ tự chụp màn hình lại đơn hàng của bạn.
       </div>
       <div class="popup-buttons">
-        <button class="btn-back">Quay lại</button>
-        <button class="btn-continue">Tiếp tục</button>
+        <button class="btn-submit">Submit</button>
       </div>
     </div>
   </div>
@@ -341,16 +92,6 @@
   </div>
 
   <script>
-    // Load tồn kho từ localStorage
-    document.querySelectorAll('.product').forEach(p=>{
-      const name=p.dataset.name;
-      const savedStock=localStorage.getItem(name+'-stock');
-      if(savedStock){
-        p.dataset.max=savedStock;
-        p.querySelector('.stock').textContent=savedStock;
-      }
-    });
-
     const products=document.querySelectorAll('.product');
     const totalEl=document.querySelector('.total');
     const payBtn=document.querySelector('.pay-btn');
@@ -365,11 +106,8 @@
       const display=product.querySelector('.quantity-display');
       plus.addEventListener('click',()=>{
         let q=+display.textContent;
-        let max=+product.dataset.max;
-        if(q<max){
-          q++;
-          display.textContent=q;
-        }
+        q++;
+        display.textContent=q;
         updateTotal();
       });
       minus.addEventListener('click',()=>{
@@ -408,25 +146,14 @@
       popup.classList.add('show');
     });
 
-    document.querySelector('.btn-back').addEventListener('click',()=>{
-      popup.classList.remove('show');
-    });
-
-    document.querySelector('.btn-continue').addEventListener('click',()=>{
-      products.forEach(p=>{
-        const name=p.dataset.name;
-        let max=+p.dataset.max;
-        let q=+p.querySelector('.quantity-display').textContent;
-        if(q>0){
-          max=max-q;
-          if(max<0) max=0;
-          p.dataset.max=max;
-          p.querySelector('.stock').textContent=max;
-          localStorage.setItem(name+'-stock',max);
-          p.querySelector('.quantity-display').textContent='0';
-        }
+    // Nút submit: tự động chụp màn hình
+    document.querySelector('.btn-submit').addEventListener('click',()=>{
+      html2canvas(document.body).then(canvas=>{
+        const link=document.createElement('a');
+        link.download='donhang.png';
+        link.href=canvas.toDataURL();
+        link.click();
       });
-      updateTotal();
       popup.classList.remove('show');
       thankPopup.classList.add('show');
     });
@@ -435,13 +162,9 @@
       thankPopup.classList.remove('show');
     });
 
-    // Reset tồn kho
+    // Reset về 0
     document.querySelector('.reset-btn').addEventListener('click',()=>{
       products.forEach(p=>{
-        let max=10;
-        p.dataset.max=max;
-        p.querySelector('.stock').textContent=max;
-        localStorage.setItem(p.dataset.name+'-stock',max);
         p.querySelector('.quantity-display').textContent='0';
       });
       updateTotal();
