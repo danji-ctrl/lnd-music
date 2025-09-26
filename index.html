@@ -284,4 +284,129 @@
       <div class="popup-total"></div>
       <img src="photo_2025-09-26_19-53-24.jpg" alt="QR" style="width:140px; margin-top:8px;">
       <div class="qr-description">
-        Quét mã QR để thanh toán, sau đó chụp bill và các sản phẩm bạn chọn gửi qua facebook cho mình
+        Quét mã QR để thanh toán, sau đó chụp bill và các sản phẩm bạn chọn gửi qua facebook cho mình nha. Cảm ơn bạn!
+      </div>
+      <div class="popup-buttons">
+        <button class="btn-back">Quay lại</button>
+        <button class="btn-continue">Tiếp tục</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- popup cảm ơn -->
+  <div class="thank-popup">
+    <div class="thank-content">
+      <h3>Cảm ơn bạn đã mua sản phẩm!!!</h3>
+      <button class="btn-thank-close">Đóng</button>
+    </div>
+  </div>
+
+  <script>
+    // Load tồn kho từ localStorage
+    document.querySelectorAll('.product').forEach(p=>{
+      const name=p.dataset.name;
+      const savedStock=localStorage.getItem(name+'-stock');
+      if(savedStock){
+        p.dataset.max=savedStock;
+        p.querySelector('.stock').textContent=savedStock;
+      }
+    });
+
+    const products=document.querySelectorAll('.product');
+    const totalEl=document.querySelector('.total');
+    const payBtn=document.querySelector('.pay-btn');
+    const popup=document.querySelector('.popup');
+    const selectedList=document.querySelector('.selected-products');
+    const popupTotal=document.querySelector('.popup-total');
+    const thankPopup=document.querySelector('.thank-popup');
+
+    products.forEach(product=>{
+      const plus=product.querySelector('.plus');
+      const minus=product.querySelector('.minus');
+      const display=product.querySelector('.quantity-display');
+      plus.addEventListener('click',()=>{
+        let q=+display.textContent;
+        let max=+product.dataset.max;
+        if(q<max){
+          q++;
+          display.textContent=q;
+        }
+        updateTotal();
+      });
+      minus.addEventListener('click',()=>{
+        let q=+display.textContent;
+        if(q>0) q--;
+        display.textContent=q;
+        updateTotal();
+      });
+    });
+
+    function updateTotal(){
+      let total=0;
+      products.forEach(p=>{
+        const price=+p.dataset.price;
+        const q=+p.querySelector('.quantity-display').textContent;
+        total+=price*q;
+      });
+      totalEl.textContent='Tổng: '+total.toLocaleString('vi-VN')+'đ';
+    }
+
+    payBtn.addEventListener('click',()=>{
+      selectedList.innerHTML='';
+      let total=0;
+      products.forEach(p=>{
+        const name=p.dataset.name;
+        const price=+p.dataset.price;
+        const q=+p.querySelector('.quantity-display').textContent;
+        if(q>0){
+          const li=document.createElement('li');
+          li.textContent=name+' x '+q;
+          selectedList.appendChild(li);
+          total+=price*q;
+        }
+      });
+      popupTotal.textContent='Tổng: '+total.toLocaleString('vi-VN')+'đ';
+      popup.classList.add('show');
+    });
+
+    document.querySelector('.btn-back').addEventListener('click',()=>{
+      popup.classList.remove('show');
+    });
+
+    document.querySelector('.btn-continue').addEventListener('click',()=>{
+      products.forEach(p=>{
+        const name=p.dataset.name;
+        let max=+p.dataset.max;
+        let q=+p.querySelector('.quantity-display').textContent;
+        if(q>0){
+          max=max-q;
+          if(max<0) max=0;
+          p.dataset.max=max;
+          p.querySelector('.stock').textContent=max;
+          localStorage.setItem(name+'-stock',max);
+          p.querySelector('.quantity-display').textContent='0';
+        }
+      });
+      updateTotal();
+      popup.classList.remove('show');
+      thankPopup.classList.add('show');
+    });
+
+    document.querySelector('.btn-thank-close').addEventListener('click',()=>{
+      thankPopup.classList.remove('show');
+    });
+
+    // Reset tồn kho
+    document.querySelector('.reset-btn').addEventListener('click',()=>{
+      products.forEach(p=>{
+        let max=10;
+        p.dataset.max=max;
+        p.querySelector('.stock').textContent=max;
+        localStorage.setItem(p.dataset.name+'-stock',max);
+        p.querySelector('.quantity-display').textContent='0';
+      });
+      updateTotal();
+    });
+  </script>
+</body>
+</html>
