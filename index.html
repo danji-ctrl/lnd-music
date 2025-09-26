@@ -1,206 +1,278 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Danh sách sản phẩm — Checkout</title>
-  <style>
-    :root{
-      --accent:#e02424;
-      --muted:#666;
-      --card-bg:#fff;
-      --surface:#f6f7fb;
-      --max-width:1000px;
-    }
-    *{box-sizing:border-box}
-    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0;background:var(--surface); color:#111}
-    .wrap{max-width:var(--max-width); margin:18px auto; padding:16px}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vanilla Menu</title>
+<style>
+:root{
+  --accent:#9dc53c;
+  --muted:#666;
+  --card-bg:#fff;
+  --surface:#f8fbe9;
+  --max-width:1000px;
+}
+*{box-sizing:border-box}
+body{
+  font-family:Inter,system-ui,Arial;
+  background:var(--surface);
+  color:#111;
+  margin:0;
+}
+.wrap{max-width:var(--max-width);margin:0 auto}
 
-    /* Top banner image */
-    .banner{height:1333px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#111827, #374151); color:white; position:relative}
-    .banner img{width:100%; height:100%; object-fit:cover}
-    .banner .title{position:absolute; font-size:18px; font-weight:700; left:20px}
+/* Banner */
+.banner img{
+  width:100%;
+  height:auto;
+  display:block;
+  border-radius:0;
+}
 
-    /* Products grid */
-    .products{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin:18px 0}
-    .card{background:var(--card-bg); border-radius:10px; padding:12px; box-shadow:0 6px 18px rgba(16,24,40,0.06); display:flex; gap:10px; align-items:center}
-    .thumb{width:76px; height:76px; border-radius:8px; overflow:hidden; background:#f3f4f6; display:flex; align-items:center; justify-content:center}
-    .thumb img{width:100%; height:100%; object-fit:cover}
-    .meta{flex:1}
-    .name{font-weight:600; margin-bottom:6px}
-    .muted{color:var(--muted); font-size:13px}
+/* Tabs */
+.tabs{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+  padding:12px;
+}
+.tab{
+  background:#fff;
+  color:#000;
+  border:none;
+  border-radius:10px;
+  padding:8px 18px;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 2px 5px rgba(0,0,0,0.08);
+}
+.tab.active{
+  background:var(--accent);
+  color:#fff;
+}
 
-    /* controls */
-    .controls{display:flex; flex-direction:column; gap:8px; align-items:flex-end}
-    .price-btn{background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600}
-    .qty{display:inline-flex; align-items:center; gap:6px; background:#fafafa; border-radius:8px; padding:4px}
-    .qty button{border:1px solid #e5e7eb; background:white; width:28px; height:28px; border-radius:6px; cursor:pointer}
-    .qty .num{min-width:28px; text-align:center; font-weight:600}
+/* Product grid */
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:12px;
+  padding:12px;
+}
+.card{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:10px;
+  display:flex;
+  gap:10px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.06);
+}
+.card img{
+  width:80px;height:80px;
+  object-fit:cover;
+  border-radius:8px;
+}
+.meta{flex:1}
+.meta .name{font-weight:600}
+.meta .desc{font-size:13px;color:var(--muted);margin-top:2px;margin-bottom:4px;}
+.price{font-weight:600;margin-bottom:4px;}
 
-    /* checkout bar */
-    .checkout{position:sticky; bottom:12px; background:var(--card-bg); border-radius:12px; padding:12px; box-shadow:0 10px 30px rgba(2,6,23,0.08); display:flex; gap:12px; align-items:center; justify-content:space-between}
-    .total{font-size:18px; font-weight:700}
-    .pay-btn{background:#0f172a; color:white; padding:10px 16px; border-radius:8px; border:none; cursor:pointer}
+/* Controls */
+.controls{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.qty{display:flex;align-items:center;gap:4px;}
+.qty button{
+  width:28px;height:28px;border-radius:6px;
+  border:1px solid #ddd;
+  background:#fff;cursor:pointer;font-weight:600;
+}
+.qty input{
+  width:40px;text-align:center;border:1px solid #ddd;
+  border-radius:6px;padding:4px;font-weight:600;
+}
 
-    /* small responsive tweaks */
-    @media (max-width:1000px){
-      .banner{height:1333px}
-      .products{grid-template-columns:1fr}
-      .controls{align-items:flex-start}
-    }
-  </style>
+/* Checkout bar */
+.checkout{
+  background:var(--card-bg);
+  border-radius:12px;
+  margin:12px;
+  padding:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.total{font-size:18px;font-weight:700}
+.pay-btn{
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* Popup */
+.popup{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;align-items:center;justify-content:center;
+}
+.popup-content{
+  background:white;
+  max-width:400px;
+  width:90%;
+  border-radius:10px;
+  padding:16px;
+}
+.popup-content h3{margin-top:0}
+.popup-content ul{padding-left:20px;}
+.popup-content button{
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:8px;
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- Top menu image -->
-    <header class="banner" role="banner">
-      <img src="sample 7.png" alt="Menu">
-      <div class="title"></div>
-    </header>
+<div class="wrap">
 
-    <!-- Products list -->
-    <main>
-      <section class="products" id="productList" aria-live="polite"></section>
-    </main>
-
-    <!-- Checkout bar -->
-    <div class="checkout" id="checkoutBar">
-      <div>
-        <div class="muted">Tổng</div>
-        <div class="total" id="totalAmount">0 ₫</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="pay-btn" id="payBtn">Thanh toán</button>
-      </div>
-    </div>
+  <!-- Banner -->
+  <div class="banner">
+    <img src="banner-menu.jpg" alt="Vanilla's Menu">
   </div>
 
-  <script>
-    // Danh sách sản phẩm có thêm ảnh
-    const products = [
-      {id:1, name:'Keychain 7cm', price:70000, image:'img/keychain7.jpg'},
-      {id:2, name:'Standee 10cm', price:100000, image:'img/standee10.jpg'},
-      {id:3, name:'Layered Keychain', price:85000, image:'img/layeredkey.jpg'},
-      {id:4, name:'Polaroid', price:40000, image:'img/polaroid.jpg'},
-      {id:5, name:'Artprint A6', price:70000, image:'img/artprinta6.jpg'},
-      {id:6, name:'Sticker', price:10000, image:'img/sticker.jpg'}
-    ];
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-filter="all">All</button>
+    <button class="tab" data-filter="Keychain 7cm">SP1</button>
+    <button class="tab" data-filter="Standee 10cm">SP2</button>
+    <button class="tab" data-filter="Layered Keychain">SP3</button>
+    <button class="tab" data-filter="Polaroid">SP4</button>
+    <button class="tab" data-filter="Artprint A6">SP5</button>
+    <button class="tab" data-filter="Sticker">SP6</button>
+  </div>
 
-    // Giữ trạng thái cart (số lượng của từng sản phẩm)
-    const cart = {}; // cart[productId] = quantity
+  <!-- Products -->
+  <section class="products" id="productList"></section>
 
-    const productListEl = document.getElementById('productList');
-    const totalAmountEl = document.getElementById('totalAmount');
-    const payBtn = document.getElementById('payBtn');
+  <!-- Checkout -->
+  <div class="checkout">
+    <div class="total" id="totalAmount">Tổng: 0 ₫</div>
+    <button class="pay-btn" id="payBtn">Thanh toán</button>
+  </div>
+</div>
 
-    // format tiền (VND)
-    function formatVND(n){
-      const s = Math.round(n).toString();
-      return s.replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.') + ' ₫';
-    }
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h3>Đơn hàng của bạn</h3>
+    <ul id="orderList"></ul>
+    <div id="orderTotal" style="font-weight:700;margin-top:8px"></div>
+    <button onclick="closePopup()">Đóng</button>
+  </div>
+</div>
 
-    // render danh sách sản phẩm
-    function renderProducts(){
-      productListEl.innerHTML = '';
-      products.forEach(p => {
-        const qty = cart[p.id] || 0;
+<script>
+const products = [
+  {name:'Keychain 7cm',desc:'Acrylic double board, nền trong',price:70000,image:'img/keychain7.jpg'},
+  {name:'Standee 10cm',desc:'Acrylic double board, nền màu',price:100000,image:'img/standee10.jpg'},
+  {name:'Layered Keychain',desc:'Acrylic double board, nền trong',price:85000,image:'img/layeredkey.jpg'},
+  {name:'Polaroid',desc:'Giấy nhũ 600gsm, hai mặt',price:40000,image:'img/polaroid.jpg'},
+  {name:'Artprint A6',desc:'Giấy nhũ 300gsm',price:50000,image:'img/artprinta6.jpg'},
+  {name:'Sticker',desc:'Sticker chất lượng',price:10000,image:'img/sticker.jpg'}
+];
 
-        const card = document.createElement('article');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="thumb">
-            <img src="${p.image}" alt="${p.name}">
-          </div>
-          <div class="meta">
-            <div class="name">${p.name}</div>
-            <div class="muted">Giá: ${formatVND(p.price)}</div>
-          </div>
-          <div class="controls">
-            <button class="price-btn" data-id="${p.id}">${formatVND(p.price)}</button>
-            <div class="qty" aria-label="Số lượng ${p.name}">
-              <button class="dec" data-id="${p.id}" aria-label="Giảm">−</button>
-              <div class="num" data-id-num="${p.id}">${qty}</div>
-              <button class="inc" data-id="${p.id}" aria-label="Tăng">+</button>
-            </div>
-          </div>
-        `;
+let cart={};
 
-        productListEl.appendChild(card);
-      });
+const productList=document.getElementById('productList');
+const totalAmount=document.getElementById('totalAmount');
+const orderList=document.getElementById('orderList');
+const orderTotal=document.getElementById('orderTotal');
+const popup=document.getElementById('popup');
 
-      // add event listeners
-      document.querySelectorAll('.price-btn').forEach(btn => btn.addEventListener('click', onPriceClick));
-      document.querySelectorAll('.inc').forEach(b => b.addEventListener('click', onInc));
-      document.querySelectorAll('.dec').forEach(b => b.addEventListener('click', onDec));
-    }
+function formatVND(n){return n.toLocaleString('vi-VN')+' ₫'}
 
-    function onPriceClick(e){
-      const id = Number(e.currentTarget.dataset.id);
-      addQuantity(id, 1);
-      e.currentTarget.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:180});
-    }
+function render(filter='all'){
+  productList.innerHTML='';
+  products.filter(p=>filter==='all'||p.name===filter)
+          .forEach((p,i)=>{
+    const qty=cart[p.name]||0;
+    productList.innerHTML+=`
+    <div class="card">
+      <img src="${p.image}" alt="${p.name}">
+      <div class="meta">
+        <div class="name">${p.name}</div>
+        <div class="desc">${p.desc}</div>
+        <div class="price">${formatVND(p.price)}</div>
+      </div>
+      <div class="controls">
+        <div class="qty">
+          <button onclick="changeQty('${p.name}',-1)">−</button>
+          <input type="number" min="0" value="${qty}" onchange="setQty('${p.name}',this.value)">
+          <button onclick="changeQty('${p.name}',1)">+</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  updateTotal();
+}
+function changeQty(name,delta){
+  const prev=cart[name]||0;
+  let next=prev+delta;
+  if(next<0)next=0;
+  cart[name]=next;
+  render(document.querySelector('.tab.active').dataset.filter);
+}
+function setQty(name,val){
+  let n=parseInt(val)||0;
+  if(n<0)n=0;
+  cart[name]=n;
+  updateTotal();
+}
+function updateTotal(){
+  let total=0;
+  for(const name in cart){
+    const qty=cart[name];
+    if(qty<=0)continue;
+    const prod=products.find(x=>x.name===name);
+    total+=prod.price*qty;
+  }
+  totalAmount.textContent='Tổng: '+formatVND(total);
+}
 
-    function onInc(e){
-      const id = Number(e.currentTarget.dataset.id);
-      addQuantity(id, 1);
-    }
-    function onDec(e){
-      const id = Number(e.currentTarget.dataset.id);
-      addQuantity(id, -1);
-    }
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    render(tab.dataset.filter);
+  });
+});
 
-    function addQuantity(id, delta){
-      const prod = products.find(x=>x.id===id);
-      if(!prod) return;
-      const prev = cart[id] || 0;
-      let next = prev + delta;
-      if(next < 0) next = 0;
-      cart[id] = next;
+document.getElementById('payBtn').addEventListener('click',()=>{
+  orderList.innerHTML='';
+  let total=0;
+  for(const name in cart){
+    const qty=cart[name];
+    if(qty<=0)continue;
+    const prod=products.find(x=>x.name===name);
+    const subtotal=prod.price*qty;
+    total+=subtotal;
+    orderList.innerHTML+=`<li>${prod.name} × ${qty} = ${formatVND(subtotal)}</li>`;
+  }
+  if(total===0){alert('Giỏ hàng rỗng');return;}
+  orderTotal.textContent='Tổng: '+formatVND(total);
+  popup.style.display='flex';
+});
 
-      const numEl = document.querySelector(`[data-id-num=\"${id}\"]`);
-      if(numEl) numEl.textContent = next;
+function closePopup(){popup.style.display='none';}
 
-      recalcTotal();
-    }
-
-    function recalcTotal(){
-      let total = 0;
-      for(const idStr in cart){
-        const id = Number(idStr);
-        const qty = cart[id] || 0;
-        if(qty <= 0) continue;
-        const prod = products.find(x=>x.id===id);
-        if(!prod) continue;
-        total += Math.round(prod.price) * qty;
-      }
-      totalAmountEl.textContent = formatVND(total);
-    }
-
-    // Thanh toán
-    payBtn.addEventListener('click', ()=>{
-      const lines = [];
-      let total = 0;
-      for(const idStr in cart){
-        const id = Number(idStr);
-        const qty = cart[id] || 0;
-        if(qty<=0) continue;
-        const prod = products.find(x=>x.id===id);
-        const subtotal = prod.price * qty;
-        lines.push(`${prod.name} × ${qty} = ${formatVND(subtotal)}`);
-        total += subtotal;
-      }
-      if(lines.length === 0){
-        alert('Giỏ hàng rỗng. Vui lòng chọn sản phẩm trước khi thanh toán.');
-        return;
-      }
-      lines.push('-------------------------');
-      lines.push('Tổng: ' + formatVND(total));
-      alert(lines.join('\\n'));
-    });
-
-    // init
-    renderProducts();
-    recalcTotal();
-  </script>
+render();
+</script>
 </body>
 </html>
