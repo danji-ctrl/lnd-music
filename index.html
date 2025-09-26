@@ -199,17 +199,20 @@
       </div>
     </div>
 
-    <div class="product">
-      <img src="key1.png" alt="Standee">
-      <h3>Standee 10cm</h3>
-      <p>Acrylic double board</p>
-      <div class="price">100,000 VND</div>
-      <div class="quantity">
-        <button onclick="changeQty(this,-1)">-</button>
-        <input type="number" value="0" min="0">
-        <button onclick="changeQty(this,1)">+</button>
-      </div>
-    </div>
+ <div class="product sold-out">
+  <img src="key1.png" alt="Keychain 7cm">
+  <div class="product-info">
+    <h3>Keychain 7cm</h3>
+    <p>Acrylic double board</p>
+    <span class="price">70.000 VND</span>
+  </div>
+  <div class="qty">
+    <button class="minus" disabled>-</button>
+    <input type="number" value="0" min="0" disabled>
+    <button class="plus" disabled>+</button>
+  </div>
+  <div class="overlay">Hết hàng</div>
+</div>
 
     <div class="product">
       <img src="key1.png" alt="Layered Keychain">
