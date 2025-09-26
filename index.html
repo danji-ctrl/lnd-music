@@ -75,6 +75,7 @@
       justify-content: center;
       margin-top: 10px;
       gap: 10px;
+      font-size: 1rem;
     }
 
     .quantity button {
@@ -88,7 +89,6 @@
       cursor: pointer;
     }
 
-
     /* Total */
     .total {
       background: #fff;
@@ -99,6 +99,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 1rem;
     }
 
     .checkout-btn {
@@ -160,13 +161,17 @@
       margin-top: 10px;
     }
 
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
     @media (max-width: 768px) {
       .product-list {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-
-      .quantity input {
-        width: 40px;
       }
     }
   </style>
@@ -180,26 +185,27 @@
 
   <!-- Product list -->
   <div class="product-list" id="product-list">
-    <div class="product">
+
+    <div class="product" data-max="9">
       <img src="key1.png" alt="Keychain">
       <h3>Keychain 7cm</h3>
       <p>Acrylic double board</p>
       <div class="price">70,000 VND</div>
-     <div class="quantity">
+      <div class="quantity">
         <button onclick="changeQty(this,-1)">-</button>
         <span class="qty">0</span>
         <button onclick="changeQty(this,1)">+</button>
       </div>
     </div>
 
-   <div class="product">
-      <img src="key1.png" alt="Standee">
+    <div class="product" data-max="10">
+      <img src="Rectangle 746645959.png" alt="Standee">
       <h3>Standee 10cm</h3>
       <p>Acrylic double board</p>
       <div class="price">100,000 VND</div>
       <div class="quantity">
         <button onclick="changeQty(this,-1)">-</button>
-       <span class="qty">0</span>
+        <span class="qty">0</span>
         <button onclick="changeQty(this,1)">+</button>
       </div>
     </div>
@@ -216,7 +222,7 @@
       </div>
     </div>
 
-    <div class="product">
+    <div class="product" data-max="10">
       <img src="key1.png" alt="Polaroid">
       <h3>Polaroid</h3>
       <p>Giấy nhũ 600gsm</p>
@@ -228,7 +234,7 @@
       </div>
     </div>
 
-    <div class="product">
+    <div class="product" data-max="10">
       <img src="key1.png" alt="Artprint A6">
       <h3>Artprint A6</h3>
       <p>Giấy nhũ 300gsm</p>
@@ -236,9 +242,10 @@
       <div class="quantity">
         <button onclick="changeQty(this,-1)">-</button>
         <span class="qty">0</span>
-        <button onclick="changeQty(this,1)" disabled>+</button>
+        <button onclick="changeQty(this,1)">+</button>
       </div>
     </div>
+
   </div>
 
   <!-- Total & checkout -->
@@ -254,69 +261,64 @@
       <div class="popup-list" id="popup-list"></div>
       <div><b>Tổng:</b> <span id="popup-total">0</span> VND</div>
       <img src="photo_2025-09-26_19-53-24.jpg" alt="QR Code" style="width:150px;margin:10px auto;display:block;">
-       <p style="font-size:0.9rem;text-align:center;line-height:1.4;margin-bottom:10px;">
-        Quét mã QR để thanh toán, ghi nội dung là số điện thoại, sau đó chụp bill và các sản phẩm bạn chọn gửi qua Facebook cho mình nha. Cảm ơn bạn!
-      </p>
       <div class="popup-close" onclick="closePopup()">Đóng</div>
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer>
+    Nếu bạn bấm cộng sản phẩm không được thì sản phẩm đó đã hết hàng.
+  </footer>
+
 <script>
-  // tăng/giảm số lượng (giữ trong khoảng 0..10)
   function changeQty(btn, delta){
-    const input = btn.parentElement.querySelector('input');
-    let val = parseInt(input.value) || 0;
+    const product = btn.closest('.product');
+    const maxQty = parseInt(product.getAttribute('data-max')) || 10;
+    const qtySpan = product.querySelector('.qty');
+    let val = parseInt(qtySpan.textContent) || 0;
     val += delta;
     if (val < 0) val = 0;
-    if (val > 10) val = 10; // max = 10
-    input.value = val;
+    if (val > maxQty) val = maxQty;
+    qtySpan.textContent = val;
     calcTotal();
   }
 
-
-  // helper: lấy giá từ chuỗi (vd "70,000 VND" -> 70000; "Hết hàng" -> 0)
   function parsePriceFromText(text){
     if (!text) return 0;
-    // loại bỏ mọi ký tự không phải chữ số
     const digits = text.replace(/[^\d]/g, '');
     return digits ? parseInt(digits, 10) : 0;
   }
 
-  // tính tổng an toàn
   function calcTotal(){
     let total = 0;
     const products = document.querySelectorAll('.product');
     products.forEach(prod=>{
-      const input = prod.querySelector('input');
-      const qty = parseInt(input.value) || 0;
-      const priceText = (prod.querySelector('.price') && prod.querySelector('.price').textContent) || '';
+      const qty = parseInt(prod.querySelector('.qty').textContent) || 0;
+      const priceText = prod.querySelector('.price').textContent || '';
       const price = parsePriceFromText(priceText);
       total += price * qty;
     });
-    const totalEl = document.getElementById('total-price');
-    if (totalEl) totalEl.textContent = total.toLocaleString();
+    document.getElementById('total-price').textContent = total.toLocaleString();
   }
 
-  // popup checkout (cũng dùng parse an toàn)
   function checkout(){
     const popupList = document.getElementById('popup-list');
     popupList.innerHTML = '';
     let total = 0;
     const products = document.querySelectorAll('.product');
     products.forEach(prod=>{
-      const qty = parseInt(prod.querySelector('input').value) || 0;
-      if (qty > 0) {
+      const qty = parseInt(prod.querySelector('.qty').textContent) || 0;
+      if(qty>0){
         const name = prod.querySelector('h3').textContent;
         const price = parsePriceFromText(prod.querySelector('.price').textContent);
-        total += price * qty;
+        total += price*qty;
         const div = document.createElement('div');
         div.className='popup-item';
         div.innerHTML = `<span>${name} x${qty}</span><span>${(price*qty).toLocaleString()} VND</span>`;
         popupList.appendChild(div);
       }
     });
-    const popupTotalEl = document.getElementById('popup-total');
-    if (popupTotalEl) popupTotalEl.textContent = total.toLocaleString();
+    document.getElementById('popup-total').textContent = total.toLocaleString();
     document.getElementById('popup').style.display='flex';
   }
 
@@ -324,19 +326,10 @@
     document.getElementById('popup').style.display='none';
   }
 
-  // khi DOM load: set max=10 cho các input và tính tổng ban đầu
   document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('.quantity input').forEach(input=>{
-      input.setAttribute('max', '10');
-      if (input.value === '' || isNaN(parseInt(input.value))) input.value = 0;
-    });
     calcTotal();
   });
 </script>
 
-<!-- Footer -->
-  <footer style="text-align:center;padding:15px;font-size:0.9rem;color:#555;">
-    Nếu bạn bấm cộng sản phẩm không được thì sản phẩm đó đã hết hàng
-  </footer>
 </body>
 </html>
