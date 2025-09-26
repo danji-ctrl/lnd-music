@@ -1,342 +1,213 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanilla's Menu</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop UI</title>
+<style>
+  body {margin:0;font-family:sans-serif;background:#f9f9f9;}
+  header img {width:100%;display:block;}
+  .products {padding:15px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;}
+  .product {
+    background:#fff;padding:10px;border-radius:10px;box-shadow:0 0 5px rgba(0,0,0,.1);
+    display:flex;flex-direction:column;align-items:center;position:relative;
+  }
+  .product img {width:100%;border-radius:8px;}
+  .product h3 {margin:5px 0 3px;font-size:1.1rem;text-align:center;}
+  .product p {margin:3px 0;font-size:.9rem;text-align:center;color:#555;}
+  .price {font-weight:bold;margin:3px 0;color:#d00;}
+  .quantity {display:flex;align-items:center;gap:10px;margin-top:5px;}
+  .quantity button {
+    width:30px;height:30px;border-radius:50%;border:1px solid #999;background:#fff;cursor:pointer;font-size:18px;
+  }
+  .quantity span {min-width:20px;text-align:center;}
+  .out-of-stock::after {
+    content:"Hết hàng";position:absolute;top:10px;right:10px;background:red;color:#fff;padding:2px 6px;border-radius:5px;font-size:.8rem;
+  }
+  .total-bar {padding:15px;background:#fff;box-shadow:0 -1px 5px rgba(0,0,0,.1);display:flex;justify-content:space-between;align-items:center;}
+  .checkout-btn {
+    padding:10px 20px;background:#28a745;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:1rem;
+  }
+  footer {padding:10px;text-align:center;font-size:.85rem;color:#555;}
 
-    body {
-      background: #f9f9f9;
-      color: #333;
-    }
-
-    /* Banner */
-    .banner img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Product list */
-    .product-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-
-    .product {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .product img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-    }
-
-    .product h3 {
-      margin-top: 10px;
-      font-size: 1rem;
-    }
-
-    .product p {
-      font-size: 0.9rem;
-      color: #666;
-      margin: 5px 0;
-    }
-
-    .price {
-      font-weight: bold;
-      margin: 5px 0;
-    }
-
-    .quantity {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 10px;
-      gap: 10px;
-    }
-
-    .quantity button {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: #7fd665;
-      color: #fff;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .stock {
-      font-size: 0.8rem;
-      color: #999;
-      margin-top: 4px;
-    }
-
-    /* Total */
-    .total {
-      background: #fff;
-      margin: 20px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .checkout-btn {
-      background: #9edb73;
-      color: #333;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 25px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    /* Popup */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .popup-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    .popup-content h2 {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .popup-list {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
-
-    .popup-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-    }
-
-    .popup-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .popup-back {
-      flex: 1;
-      text-align: center;
-      background: transparent;
-      border: 2px solid #9edb73;
-      color: #9edb73;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .popup-continue {
-      flex: 1;
-      text-align: center;
-      background: #9edb73;
-      border: none;
-      color: #333;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      padding: 10px;
-      color: #666;
-    }
-
-    @media (max-width: 768px) {
-      .product-list {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-    }
-  </style>
+  /* Popup */
+  .popup {
+    display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);
+    justify-content:center;align-items:center;z-index:1000;
+  }
+  .popup-content {
+    background:#fff;width:90%;max-width:400px;border-radius:10px;padding:15px;position:relative;
+  }
+  .popup h2 {margin-top:0;}
+  .popup-item {display:flex;justify-content:space-between;margin-bottom:5px;}
+  .popup-total {font-weight:bold;margin-top:10px;text-align:right;}
+  .qr {text-align:center;margin-top:10px;}
+  .qr img {width:150px;}
+  .qr p {font-size:.9rem;margin-top:5px;}
+  .popup-buttons {
+    display:flex;justify-content:space-between;margin-top:15px;
+  }
+  .popup-buttons button {
+    flex:1;margin:0 5px;padding:10px;border-radius:8px;font-size:1rem;cursor:pointer;
+  }
+  .btn-back {
+    background:transparent;color:#333;border:1px solid #333;
+  }
+  .btn-continue {
+    background:#28a745;color:#fff;border:none;
+  }
+</style>
 </head>
 <body>
 
-  <!-- Banner -->
-  <div class="banner">
-    <img src="sample.png" alt="Banner menu">
-  </div>
+<header>
+  <img src="sample.png" alt="Banner">
+</header>
 
-  <!-- Product list -->
-  <div class="product-list" id="product-list">
-    <div class="product" data-max="10" data-selected="0">
-      <img src="key1.png" alt="Keychain">
-      <h3>Keychain 7cm</h3>
-      <p>Acrylic double board</p>
-      <div class="price">70,000 VND</div>
-      <div class="quantity">
-        <button onclick="changeQty(this,-1)">-</button>
-        <button onclick="changeQty(this,1)">+</button>
-      </div>
-      <div class="stock">Còn: 10</div>
-    </div>
-    
-    <div class="product-list" id="product-list">
-    <div class="product" data-max="10" data-selected="0">
-      <img src="key1.png" alt="Keychain">
-      <h3>Layered keychain</h3>
-      <p>Acrylic double board, nền trong</p>
-      <div class="price">85,000 VND</div>
-      <div class="quantity">
-        <button onclick="changeQty(this,-1)">-</button>
-        <button onclick="changeQty(this,1)">+</button>
-      </div>
-      <div class="stock">Còn: 10</div>
-    </div>
-      
-  <div class="product-list" id="product-list">
-    <div class="product" data-max="10" data-selected="0">
-      <img src="key1.png" alt="Keychain">
-      <h3>Polsroid</h3>
-      <p>Giấy nhũ 600gsm, Hai mặt</p>
-      <div class="price">40,000 VND</div>
-      <div class="quantity">
-        <button onclick="changeQty(this,-1)">-</button>
-        <button onclick="changeQty(this,1)">+</button>
-      </div>
-      <div class="stock">Còn: 10</div>
-    </div>
-    
-      <div class="product-list" id="product-list">
-    <div class="product" data-max="10" data-selected="0">
-      <img src="key1.png" alt="Keychain">
-      <h3>Artprint A6</h3>
-      <p>Giấy nhũ 300gsm</p>
-      <div class="price">50,000 VND</div>
-      <div class="quantity">
-        <button onclick="changeQty(this,-1)">-</button>
-        <button onclick="changeQty(this,1)">+</button>
-      </div>
-      <div class="stock">Còn: 10</div>
-    </div>
-        
-    <div class="product" data-max="8" data-selected="0">
-      <img src="key1.png" alt="Standee">
-      <h3>Standee 10cm</h3>
-      <p>Acrylic double board</p>
-      <div class="price">100,000 VND</div>
-      <div class="quantity">
-        <button onclick="changeQty(this,-1)">-</button>
-        <button onclick="changeQty(this,1)">+</button>
-      </div>
-      <div class="stock">Còn: 8</div>
+<div class="products">
+  <div class="product" data-max="10">
+    <img src="key1.png" alt="Keychain 7cm">
+    <h3>Keychain 7cm</h3>
+    <p>Móc khóa xinh xắn</p>
+    <div class="price">70000 VND</div>
+    <div class="quantity">
+      <button onclick="changeQty(this,-1)">-</button>
+      <span>0</span>
+      <button onclick="changeQty(this,1)">+</button>
     </div>
   </div>
-
-  <!-- Total & checkout -->
-  <div class="total">
-    <div>Tổng: <span id="total-price">0</span> VND</div>
-    <button class="checkout-btn" onclick="checkout()">Thanh toán</button>
-  </div>
-
-  <!-- Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h2>Giỏ hàng</h2>
-      <div class="popup-list" id="popup-list"></div>
-      <div><b>Tổng:</b> <span id="popup-total">0</span> VND</div>
-      <img src="photo_2025-09-26_19-53-24.jpg" alt="QR Code" style="width:150px;margin:10px auto;display:block;">
-      <p style="font-size:0.9rem;text-align:center;line-height:1.4;margin-bottom:10px;">
-        Quét mã QR để thanh toán, nội dung là SĐT, sau đó chụp bill và các sản phẩm bạn chọn gửi qua Facebook cho mình nha. Làm xong các bước bạn hãy bấm tiếp tục để hoàn tất quá trình.
-      </p>
-      <div class="popup-buttons">
-        <div class="popup-back" onclick="closePopup()">Quay lại</div>
-        <div class="popup-continue" onclick="confirmPurchase()">Tiếp tục</div>
-      </div>
+  <div class="product" data-max="10">
+    <img src="key1.png" alt="Layered Keychain">
+    <h3>Layered Keychain</h3>
+    <p>Móc khóa nhiều lớp</p>
+    <div class="price">85000 VND</div>
+    <div class="quantity">
+      <button onclick="changeQty(this,-1)">-</button>
+      <span>0</span>
+      <button onclick="changeQty(this,1)">+</button>
     </div>
   </div>
+  <div class="product" data-max="10">
+    <img src="key1.png" alt="Polaroid">
+    <h3>Polaroid</h3>
+    <p>Ảnh polaroid dễ thương</p>
+    <div class="price">40000 VND</div>
+    <div class="quantity">
+      <button onclick="changeQty(this,-1)">-</button>
+      <span>0</span>
+      <button onclick="changeQty(this,1)">+</button>
+    </div>
+  </div>
+  <div class="product" data-max="10">
+    <img src="key1.png" alt="Artprint A6">
+    <h3>Artprint A6</h3>
+    <p>Tranh in A6</p>
+    <div class="price">50000 VND</div>
+    <div class="quantity">
+      <button onclick="changeQty(this,-1)">-</button>
+      <span>0</span>
+      <button onclick="changeQty(this,1)">+</button>
+    </div>
+  </div>
+  <div class="product" data-max="10">
+    <img src="key1.png" alt="Standee 10cm">
+    <h3>Standee 10cm</h3>
+    <p>Standee mini</p>
+    <div class="price">100000 VND</div>
+    <div class="quantity">
+      <button onclick="changeQty(this,-1)">-</button>
+      <span>0</span>
+      <button onclick="changeQty(this,1)">+</button>
+    </div>
+  </div>
+</div>
 
-  <footer>
-    Nếu bạn bấm cộng sản phẩm không được thì sản phẩm đó đã hết hàng
-  </footer>
+<div class="total-bar">
+  <div>Tổng: <span id="total-price">0</span> VND</div>
+  <button class="checkout-btn" onclick="checkout()">Thanh toán</button>
+</div>
+
+<footer>
+  Nếu bạn bấm cộng sản phẩm không được thì sản phẩm đó đã hết hàng
+</footer>
+
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h2>Thanh toán</h2>
+    <div id="popup-list"></div>
+    <div class="popup-total">Tổng: <span id="popup-total">0</span> VND</div>
+    <div class="qr">
+      <img src="photo_2025-09-26_19-53-24.jpg" alt="QR">
+      <p>Quét mã QR để thanh toán, nội dung là SĐT, chụp bill và các sản phẩm bạn chọn gửi qua facebook cho mình nha. Sau đó bạn bấm nút tiếp tục để hoàn thành. Cảm ơn bạn!</p>
+    </div>
+    <div class="popup-buttons">
+      <button class="btn-back" onclick="closePopup()">Quay lại</button>
+      <button class="btn-continue" onclick="continueCheckout()">Tiếp tục</button>
+    </div>
+  </div>
+</div>
 
 <script>
-  function changeQty(btn, delta){
+  // load tồn kho từ localStorage
+  window.addEventListener('DOMContentLoaded',()=>{
+    const saved = localStorage.getItem('productStock');
+    if(saved){
+      const stockData = JSON.parse(saved);
+      document.querySelectorAll('.product').forEach(prod=>{
+        const name = prod.querySelector('h3').textContent.trim();
+        if(stockData[name]!==undefined){
+          prod.setAttribute('data-max',stockData[name]);
+          if(stockData[name]<=0){
+            prod.classList.add('out-of-stock');
+          }
+        }
+      });
+    }
+    calcTotal();
+  });
+
+  function changeQty(btn,delta){
     const prod = btn.closest('.product');
-    let selected = parseInt(prod.getAttribute('data-selected'));
-    let max = parseInt(prod.getAttribute('data-max'));
-
-    selected += delta;
-    if(selected < 0) selected = 0;
-    if(selected > max) selected = max;
-
-    prod.setAttribute('data-selected', selected);
-    prod.querySelector('.stock').textContent = "Còn: " + max;
+    const max = parseInt(prod.getAttribute('data-max'));
+    if(max<=0){
+      prod.classList.add('out-of-stock');
+      return;
+    }
+    const span = prod.querySelector('.quantity span');
+    let val = parseInt(span.textContent)+delta;
+    if(val<0) val=0;
+    if(val>max) val=max;
+    span.textContent=val;
     calcTotal();
   }
 
   function calcTotal(){
-    let total = 0;
-    const products = document.querySelectorAll('.product');
-    products.forEach(prod=>{
-      const qty = parseInt(prod.getAttribute('data-selected'));
-      const price = parseInt(prod.querySelector('.price').textContent.replace(/[^0-9]/g,''));
-      total += price * qty;
+    let total=0;
+    document.querySelectorAll('.product').forEach(prod=>{
+      const qty=parseInt(prod.querySelector('.quantity span').textContent);
+      const price=parseInt(prod.querySelector('.price').textContent.replace(/[^0-9]/g,''));
+      total+=price*qty;
     });
-    document.getElementById('total-price').textContent = total.toLocaleString();
+    document.getElementById('total-price').textContent=total.toLocaleString();
   }
 
   function checkout(){
-    const popupList = document.getElementById('popup-list');
-    popupList.innerHTML = '';
-    let total = 0;
-    const products = document.querySelectorAll('.product');
-    products.forEach(prod=>{
-      const qty = parseInt(prod.getAttribute('data-selected'));
+    const popupList=document.getElementById('popup-list');
+    popupList.innerHTML='';
+    let total=0;
+    document.querySelectorAll('.product').forEach(prod=>{
+      const qty=parseInt(prod.querySelector('.quantity span').textContent);
       if(qty>0){
-        const name = prod.querySelector('h3').textContent;
-        const price = parseInt(prod.querySelector('.price').textContent.replace(/[^0-9]/g,''));
-        total += price*qty;
-        const div = document.createElement('div');
+        const name=prod.querySelector('h3').textContent;
+        const price=parseInt(prod.querySelector('.price').textContent.replace(/[^0-9]/g,''));
+        total+=price*qty;
+        const div=document.createElement('div');
         div.className='popup-item';
-        div.innerHTML = `<span>${name} x${qty}</span><span>${(price*qty).toLocaleString()} VND</span>`;
+        div.innerHTML=`<span>${name} x${qty}</span><span>${(price*qty).toLocaleString()} VND</span>`;
         popupList.appendChild(div);
       }
     });
-    document.getElementById('popup-total').textContent = total.toLocaleString();
+    document.getElementById('popup-total').textContent=total.toLocaleString();
     document.getElementById('popup').style.display='flex';
   }
 
@@ -344,22 +215,31 @@
     document.getElementById('popup').style.display='none';
   }
 
-  function confirmPurchase(){
-    // Trừ sản phẩm & cập nhật data-max
-    const products = document.querySelectorAll('.product');
-    products.forEach(prod=>{
-      const qty = parseInt(prod.getAttribute('data-selected'));
-      let max = parseInt(prod.getAttribute('data-max'));
+  function continueCheckout(){
+    // trừ tồn kho
+    document.querySelectorAll('.product').forEach(prod=>{
+      const name=prod.querySelector('h3').textContent.trim();
+      const qty=parseInt(prod.querySelector('.quantity span').textContent);
       if(qty>0){
-        max -= qty;
-        if(max<0) max = 0;
-        prod.setAttribute('data-max', max);
-        prod.setAttribute('data-selected', 0);
-        prod.querySelector('.stock').textContent = "Còn: " + max;
+        let max=parseInt(prod.getAttribute('data-max'));
+        max=max-qty;
+        prod.setAttribute('data-max',max);
+        prod.querySelector('.quantity span').textContent=0;
+        if(max<=0){
+          prod.classList.add('out-of-stock');
+        }
       }
     });
-    calcTotal();
+    // lưu tồn kho vào localStorage
+    const stockData={};
+    document.querySelectorAll('.product').forEach(prod=>{
+      const name=prod.querySelector('h3').textContent.trim();
+      stockData[name]=parseInt(prod.getAttribute('data-max'));
+    });
+    localStorage.setItem('productStock',JSON.stringify(stockData));
+    // đóng popup
     closePopup();
+    calcTotal();
   }
 </script>
 
