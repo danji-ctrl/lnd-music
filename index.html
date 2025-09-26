@@ -1,78 +1,284 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Đặt Hàng</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanilla's Menu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8fce8;
+      margin: 0;
+      padding: 0;
+    }
+    header img {
+      width: 100%;
+      display: block;
+    }
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
+    }
+    .product {
+      background: #fff;
+      border-radius: 15px;
+      width: 160px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 10px;
+    }
+    .product img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+    .product h3 {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .product p {
+      font-size: 12px;
+      margin: 3px 0;
+      color: #666;
+    }
+    .product .price {
+      font-weight: bold;
+      color: #444;
+      margin: 5px 0;
+    }
+    .qty-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .qty-controls button {
+      width: 25px;
+      height: 25px;
+      border: none;
+      border-radius: 50%;
+      background: #9fd35f;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .qty-controls input {
+      width: 35px;
+      text-align: center;
+    }
+    .total-bar {
+      background: #ffffff;
+      padding: 15px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+    .total-bar button {
+      background: #9fd35f;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .popup-content h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+    .popup-content ul {
+      list-style: none;
+      padding: 0;
+    }
+    .popup-content li {
+      border-bottom: 1px solid #eee;
+      padding: 5px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    .popup-content .qr {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .popup-content .close {
+      display: block;
+      margin: 10px auto 0 auto;
+      background: #9fd35f;
+      border: none;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-    <header class="banner-menu">
-        <img src="sample 7.png" alt="Hình ảnh Banner Menu" class="banner-image">
-        <h1>Thực Đơn Quán X</h1>
-    </header>
+  <!-- Banner -->
+  <header>
+    <!-- thay đường dẫn ảnh banner tại src -->
+    <img src="sample 7.png" alt="Vanilla's Menu">
+  </header>
 
-    <main class="product-list-container">
-        
-        <div class="product-item" data-price="35000">
-            <img src="sanpham1.jpg" alt="Cà phê sữa" class="product-image">
-            <div class="product-info">
-                <h2 class="product-name">Cà Phê Sữa Đá</h2>
-                <p class="product-description">Cà phê đậm vị truyền thống, pha phin.</p>
-                <p class="product-price">35.000đ</p>
-                
-                <div class="quantity-control">
-                    <button class="quantity-btn minus-btn" data-action="minus">-</button>
-                    <input type="number" class="quantity-input" value="0" min="0">
-                    <button class="quantity-btn plus-btn" data-action="plus">+</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="product-item" data-price="40000">
-            <img src="sanpham2.jpg" alt="Trà Đào Cam Sả" class="product-image">
-            <div class="product-info">
-                <h2 class="product-name">Trà Đào Cam Sả</h2>
-                <p class="product-description">Thức uống giải khát, thơm lừng vị đào.</p>
-                <p class="product-price">40.000đ</p>
-                
-                <div class="quantity-control">
-                    <button class="quantity-btn minus-btn" data-action="minus">-</button>
-                    <input type="number" class="quantity-input" value="0" min="0">
-                    <button class="quantity-btn plus-btn" data-action="plus">+</button>
-                </div>
-            </div>
-        </div>
-        
-        </main>
-
-    <footer class="order-summary-bar">
-        <div class="total-price-display">
-            Tổng cộng: <span id="total-price">0 VNĐ</span>
-        </div>
-        <button id="checkout-btn" class="checkout-button">
-            THANH TOÁN
-        </button>
-    </footer>
-
-    <div id="checkout-popup" class="modal-popup" style="display: none;">
-        <div class="modal-content">
-            <h3>Chi Tiết Đơn Hàng</h3>
-            <div id="order-details-list">
-                <p>...</p>
-            </div>
-            <div class="popup-total-price">
-                Tổng Cộng: <span id="popup-total-price-value">0 VNĐ</span>
-            </div>
-            <div class="qr-code-area">
-                <h4>Quét mã QR để thanh toán</h4>
-                <img src="qr_code_placeholder.png" alt="Mã QR Thanh Toán" class="qr-code-image">
-            </div>
-            <button class="close-popup-btn">Đóng</button>
-        </div>
+  <!-- Danh sách sản phẩm -->
+  <div class="product-list">
+    <div class="product" data-price="70000" data-name="Keychain 7cm">
+      <img src="key1.png" alt="">
+      <h3>Keychain 7cm</h3>
+      <p>Acrylic double board</p>
+      <div class="price">70,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
     </div>
+    <div class="product" data-price="100000" data-name="Standee 10cm">
+      <img src="key1.png" alt="">
+      <h3>Standee 10cm</h3>
+      <p>Acrylic double board</p>
+      <div class="price">100,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
+    </div>
+    <div class="product" data-price="85000" data-name="Layered Keychain">
+      <img src="key1.png" alt="">
+      <h3>Layered Keychain</h3>
+      <p>Acrylic double board</p>
+      <div class="price">85,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
+    </div>
+    <div class="product" data-price="40000" data-name="Polaroid">
+      <img src="key1.png" alt="">
+      <h3>Polaroid</h3>
+      <p>Giấy nhũ 600gsm</p>
+      <div class="price">40,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
+    </div>
+    <div class="product" data-price="50000" data-name="Artprint A6">
+      <img src="key1.png" alt="">
+      <h3>Artprint A6</h3>
+      <p>Giấy nhũ 300gsm</p>
+      <div class="price">50,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
+    </div>
+  </div>
 
-    <script src="script.js"></script>
+  <!-- Tổng giá -->
+  <div class="total-bar">
+    Tổng: <span id="total">0</span> VND <br>
+    <button id="checkoutBtn">Thanh toán</button>
+  </div>
+
+  <!-- Popup thanh toán -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2>Danh sách sản phẩm</h2>
+      <ul id="orderList"></ul>
+      <div class="qr">
+        <!-- thay đường dẫn ảnh QR thanh toán tại src -->
+        <img src="qr.png" alt="QR thanh toán" width="150">
+      </div>
+      <button class="close">Đóng</button>
+    </div>
+  </div>
+
+<script>
+  const products = document.querySelectorAll('.product');
+  const totalEl = document.getElementById('total');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const popup = document.getElementById('popup');
+  const orderList = document.getElementById('orderList');
+  const closeBtn = document.querySelector('.close');
+
+  products.forEach(prod => {
+    const minus = prod.querySelector('.minus');
+    const plus = prod.querySelector('.plus');
+    const input = prod.querySelector('input');
+
+    minus.addEventListener('click', () => {
+      if (input.value > 0) input.value--;
+      updateTotal();
+    });
+    plus.addEventListener('click', () => {
+      input.value++;
+      updateTotal();
+    });
+    input.addEventListener('change', updateTotal);
+  });
+
+  function updateTotal(){
+    let total = 0;
+    products.forEach(prod => {
+      const price = parseInt(prod.dataset.price);
+      const qty = parseInt(prod.querySelector('input').value);
+      total += price * qty;
+    });
+    totalEl.textContent = total.toLocaleString();
+  }
+
+  checkoutBtn.addEventListener('click', () => {
+    orderList.innerHTML = '';
+    products.forEach(prod => {
+      const qty = parseInt(prod.querySelector('input').value);
+      if (qty>0){
+        const li = document.createElement('li');
+        li.textContent = `${prod.dataset.name} x ${qty}`;
+        const price = prod.dataset.price * qty;
+        const span = document.createElement('span');
+        span.textContent = price.toLocaleString() + ' VND';
+        li.appendChild(span);
+        orderList.appendChild(li);
+      }
+    });
+    popup.style.display = 'flex';
+  });
+
+  closeBtn.addEventListener('click', () => {
+    popup.style.display = 'none';
+  });
+</script>
+
 </body>
 </html>
