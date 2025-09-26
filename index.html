@@ -88,13 +88,6 @@
       cursor: pointer;
     }
 
-    .quantity input {
-      width: 50px;
-      text-align: center;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 4px;
-    }
 
     /* Total */
     .total {
@@ -269,54 +262,61 @@
   </div>
 
 <script>
+  // tăng/giảm số lượng (giữ trong khoảng 0..10)
   function changeQty(btn, delta){
     const input = btn.parentElement.querySelector('input');
-    let val = parseInt(input.value) + delta;
-    if(val < 0) val = 0;
-    if(val > 10) val = 10; // max = 10
+    let val = parseInt(input.value) || 0;
+    val += delta;
+    if (val < 0) val = 0;
+    if (val > 10) val = 10; // max = 10
     input.value = val;
     calcTotal();
   }
 
-  // Nếu nhập trực tiếp
-  document.querySelectorAll('.quantity input').forEach(input=>{
-    input.addEventListener('input',function(){
-      if(this.value<0) this.value=0;
-      if(this.value>10) this.value=10; // max = 10
-      calcTotal();
-    });
-  });
 
+  // helper: lấy giá từ chuỗi (vd "70,000 VND" -> 70000; "Hết hàng" -> 0)
+  function parsePriceFromText(text){
+    if (!text) return 0;
+    // loại bỏ mọi ký tự không phải chữ số
+    const digits = text.replace(/[^\d]/g, '');
+    return digits ? parseInt(digits, 10) : 0;
+  }
+
+  // tính tổng an toàn
   function calcTotal(){
     let total = 0;
     const products = document.querySelectorAll('.product');
     products.forEach(prod=>{
-      const qty = parseInt(prod.querySelector('input').value);
-      const priceText = prod.querySelector('.price').textContent;
-      const price = parseInt(priceText.replace(/[^0-9]/g,''));
+      const input = prod.querySelector('input');
+      const qty = parseInt(input.value) || 0;
+      const priceText = (prod.querySelector('.price') && prod.querySelector('.price').textContent) || '';
+      const price = parsePriceFromText(priceText);
       total += price * qty;
     });
-    document.getElementById('total-price').textContent = total.toLocaleString();
+    const totalEl = document.getElementById('total-price');
+    if (totalEl) totalEl.textContent = total.toLocaleString();
   }
 
+  // popup checkout (cũng dùng parse an toàn)
   function checkout(){
     const popupList = document.getElementById('popup-list');
     popupList.innerHTML = '';
     let total = 0;
     const products = document.querySelectorAll('.product');
     products.forEach(prod=>{
-      const qty = parseInt(prod.querySelector('input').value);
-      if(qty>0){
+      const qty = parseInt(prod.querySelector('input').value) || 0;
+      if (qty > 0) {
         const name = prod.querySelector('h3').textContent;
-        const price = parseInt(prod.querySelector('.price').textContent.replace(/[^0-9]/g,''));
-        total += price*qty;
+        const price = parsePriceFromText(prod.querySelector('.price').textContent);
+        total += price * qty;
         const div = document.createElement('div');
         div.className='popup-item';
         div.innerHTML = `<span>${name} x${qty}</span><span>${(price*qty).toLocaleString()} VND</span>`;
         popupList.appendChild(div);
       }
     });
-    document.getElementById('popup-total').textContent = total.toLocaleString();
+    const popupTotalEl = document.getElementById('popup-total');
+    if (popupTotalEl) popupTotalEl.textContent = total.toLocaleString();
     document.getElementById('popup').style.display='flex';
   }
 
@@ -324,7 +324,19 @@
     document.getElementById('popup').style.display='none';
   }
 
+  // khi DOM load: set max=10 cho các input và tính tổng ban đầu
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.quantity input').forEach(input=>{
+      input.setAttribute('max', '10');
+      if (input.value === '' || isNaN(parseInt(input.value))) input.value = 0;
+    });
+    calcTotal();
+  });
 </script>
 
+<!-- Footer -->
+  <footer style="text-align:center;padding:15px;font-size:0.9rem;color:#555;">
+    Nếu bạn bấm cộng sản phẩm không được thì sản phẩm đó đã hết hàng
+  </footer>
 </body>
 </html>
