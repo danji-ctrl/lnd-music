@@ -2,77 +2,40 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Phát Nhạc</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanilla's Menu</title>
   <style>
-    body {
-      /* Ảnh nền full màn hình */
-      background-image: url('photo_2025-09-04_12-03-06.jpg');
-      background-size: cover; /* phủ toàn màn hình */
-      background-position: center;
-      background-repeat: no-repeat;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    /* Reset */
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .play-button {
-      background-color: #000000; /* nút màu đỏ */
-      border: none;
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      cursor: pointer;
+    body {
+      background-color: #ffffff; /* nền trắng */
       display: flex;
-      align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      position: relative;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    .play-button:after {
-      content: '';
+    .image-container {
+      width: 100%;
+      max-width: 600px; /* Giới hạn chiều rộng trên PC */
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto; /* tự động tỉ lệ */
       display: block;
-      width: 0;
-      height: 0;
-      border-left: 30px solid #ffffff; /* màu tam giác play */
-      border-top: 18px solid transparent;
-      border-bottom: 18px solid transparent;
-      margin-left: 5px;
-    }
-.icon-pause {
-      display: flex;
-      gap: 6px;
-    }
-
-    .icon-pause div {
-      width: 8px;
-      height: 36px;
-      background-color: #ffffff;
-    }
-    audio {
-      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- Nút Play -->
-  <button class="play-button" onclick="toggleAudio()"></button>
-
-  <!-- File audio -->
-  <audio id="audio" src="Waveletter.mp3"></audio>
-
-  <script>
-    const audio = document.getElementById('audio');
-    function toggleAudio() {
-      if (audio.paused) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
-    }
-  </script>
+  <div class="image-container">
+    <!-- Đường dẫn ảnh: bạn thay bằng ảnh thực tế của bạn -->
+    <img src="background caro.png" alt="Vanilla's Menu">
+  </div>
 </body>
 </html>
