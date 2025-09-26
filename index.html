@@ -18,13 +18,14 @@
 
     /* Top banner image */
     .banner{height:1333px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#111827, #374151); color:white; position:relative}
-    .banner svg{width:100%; height:100%; object-fit:cover}
+    .banner img{width:100%; height:100%; object-fit:cover}
     .banner .title{position:absolute; font-size:18px; font-weight:700; left:20px}
 
     /* Products grid */
     .products{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin:18px 0}
     .card{background:var(--card-bg); border-radius:10px; padding:12px; box-shadow:0 6px 18px rgba(16,24,40,0.06); display:flex; gap:10px; align-items:center}
-    .thumb{width:76px; height:76px; border-radius:8px; background:linear-gradient(135deg,#f3f4f6,#e5e7eb); display:flex; align-items:center; justify-content:center; font-weight:700; color:#333}
+    .thumb{width:76px; height:76px; border-radius:8px; overflow:hidden; background:#f3f4f6; display:flex; align-items:center; justify-content:center}
+    .thumb img{width:100%; height:100%; object-fit:cover}
     .meta{flex:1}
     .name{font-weight:600; margin-bottom:6px}
     .muted{color:var(--muted); font-size:13px}
@@ -51,9 +52,9 @@
 </head>
 <body>
   <div class="wrap">
-    <!-- Top menu image (SVG placeholder). Replace with <img src="menu.jpg"> if you have a real image -->
+    <!-- Top menu image -->
     <header class="banner" role="banner">
-     <img src="sample 7.png">
+      <img src="sample 7.png" alt="Menu">
       <div class="title"></div>
     </header>
 
@@ -75,14 +76,14 @@
   </div>
 
   <script>
-    // Danh sách sản phẩm mẫu (thay, hoặc load từ server khi cần)
+    // Danh sách sản phẩm có thêm ảnh
     const products = [
-      {id:1, name:'Keychain 7cm', price:70000, image:'img/key 1.png'},
-      {id:2, name:'Standee 10cm', price:100000, image:'img/keychain7.jpg'},
-      {id:3, name:'Layered Keychain', price:85000, image:'img/keychain7.jpg'},
-      {id:4, name:'Polaroid', price:40000, image:'img/keychain7.jpg'},
-      {id:5, name:'Artprint A6', price:70000, image:'img/keychain7.jpg'},
-      {id:6, name:'Sticker', price:10000, image:'img/keychain7.jpg'}
+      {id:1, name:'Keychain 7cm', price:70000, image:'img/keychain7.jpg'},
+      {id:2, name:'Standee 10cm', price:100000, image:'img/standee10.jpg'},
+      {id:3, name:'Layered Keychain', price:85000, image:'img/layeredkey.jpg'},
+      {id:4, name:'Polaroid', price:40000, image:'img/polaroid.jpg'},
+      {id:5, name:'Artprint A6', price:70000, image:'img/artprinta6.jpg'},
+      {id:6, name:'Sticker', price:10000, image:'img/sticker.jpg'}
     ];
 
     // Giữ trạng thái cart (số lượng của từng sản phẩm)
@@ -94,9 +95,8 @@
 
     // format tiền (VND)
     function formatVND(n){
-      // integer arithmetic to avoid floating issues
       const s = Math.round(n).toString();
-      return s.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫';
+      return s.replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.') + ' ₫';
     }
 
     // render danh sách sản phẩm
@@ -108,7 +108,9 @@
         const card = document.createElement('article');
         card.className = 'card';
         card.innerHTML = `
-          <div class="thumb">${p.name.split(' ').slice(0,2).map(w=>w[0]).join('')}</div>
+          <div class="thumb">
+            <img src="${p.image}" alt="${p.name}">
+          </div>
           <div class="meta">
             <div class="name">${p.name}</div>
             <div class="muted">Giá: ${formatVND(p.price)}</div>
@@ -134,9 +136,7 @@
 
     function onPriceClick(e){
       const id = Number(e.currentTarget.dataset.id);
-      // Khi bấm nút giá: tăng số lượng 1 vào cart
       addQuantity(id, 1);
-      // thêm hiệu ứng nhỏ
       e.currentTarget.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:180});
     }
 
@@ -157,16 +157,13 @@
       if(next < 0) next = 0;
       cart[id] = next;
 
-      // update quantity badge
       const numEl = document.querySelector(`[data-id-num=\"${id}\"]`);
       if(numEl) numEl.textContent = next;
 
-      // recalc total
       recalcTotal();
     }
 
     function recalcTotal(){
-      // use integer arithmetic (sum of integers)
       let total = 0;
       for(const idStr in cart){
         const id = Number(idStr);
@@ -179,9 +176,8 @@
       totalAmountEl.textContent = formatVND(total);
     }
 
-    // Thanh toán: show modal / alert với tóm tắt
+    // Thanh toán
     payBtn.addEventListener('click', ()=>{
-      // build summary
       const lines = [];
       let total = 0;
       for(const idStr in cart){
@@ -199,17 +195,12 @@
       }
       lines.push('-------------------------');
       lines.push('Tổng: ' + formatVND(total));
-      // You can replace alert with a custom modal or redirect to checkout page
-      alert(lines.join('\n'));
+      alert(lines.join('\\n'));
     });
 
     // init
     renderProducts();
     recalcTotal();
-
-
-<section class="products" id="productList"></section>
-
   </script>
 </body>
 </html>
