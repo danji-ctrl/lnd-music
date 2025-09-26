@@ -1,237 +1,202 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vanilla's Menu</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f6f9d9;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-  header img {
-    width: 100%;
-    max-width: 1000px;
-    display: block;
-    margin: auto;
-  }
-  .product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    padding: 15px;
-    max-width: 1000px;
-    margin: auto;
-  }
-  .product {
-    background: #fff;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .product img {
-    width: 100%;
-    border-radius: 10px;
-  }
-  .product h3 {
-    margin: 5px 0;
-  }
-  .controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 5px;
-  }
-  .controls button {
-    background: #8ac03d;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  .controls input {
-    width: 40px;
-    text-align: center;
-    font-size: 16px;
-  }
-  .total {
-    background: #fff;
-    padding: 15px;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  .checkout-btn {
-    background: #b2d24c;
-    border: none;
-    padding: 15px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 30px;
-    margin: 15px 0;
-    cursor: pointer;
-  }
-  /* Popup */
-  .popup {
-    display: none;
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
-  }
-  .popup-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-  }
-  .popup-content h2 {
-    margin-top: 0;
-  }
-  .popup-content ul {
-    list-style: none;
-    padding: 0;
-  }
-  .popup-content img.qr {
-    width: 150px;
-    margin-top: 10px;
-  }
-  .close-btn {
-    background: #ccc;
-    border:none;
-    padding: 10px 20px;
-    margin-top: 10px;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanilla's Menu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8fce8;
+      margin: 0;
+      padding: 0;
+    }
+    header img {
+      width: 100%;
+      display: block;
+    }
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
+    }
+    .product {
+      background: #fff;
+      border-radius: 15px;
+      width: 160px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 10px;
+    }
+    .product img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+    .product h3 {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .product p {
+      font-size: 12px;
+      margin: 3px 0;
+      color: #666;
+    }
+    .product .price {
+      font-weight: bold;
+      color: #444;
+      margin: 5px 0;
+    }
+    .qty-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .qty-controls button {
+      width: 25px;
+      height: 25px;
+      border: none;
+      border-radius: 50%;
+      background: #9fd35f;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .qty-controls input {
+      width: 35px;
+      text-align: center;
+    }
+    .total-bar {
+      background: #ffffff;
+      padding: 15px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+    .total-bar button {
+      background: #9fd35f;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .popup-content h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+    .popup-content ul {
+      list-style: none;
+      padding: 0;
+    }
+    .popup-content li {
+      border-bottom: 1px solid #eee;
+      padding: 5px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    .popup-content .qr {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .popup-content .close {
+      display: block;
+      margin: 10px auto 0 auto;
+      background: #9fd35f;
+      border: none;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Banner -->
   <header>
-    <img src="sample 7.png" alt="Banner Menu">
+    <img src="sample 7.png" alt="Vanilla's Menu">
   </header>
 
-  <div class="product-list" id="productList">
-    <!-- Sản phẩm mẫu -->
-    <div class="product" data-price="70000">
-      <img src="sp1.jpg" alt="SP1">
+  <!-- Danh sách sản phẩm -->
+  <div class="product-list">
+    <div class="product" data-price="70000" data-name="Keychain 7cm">
+      <img src="key1.png" alt="">
       <h3>Keychain 7cm</h3>
-      <p>Acrylic double board Nền trong</p>
-      <p><b>70,000 VND</b></p>
-      <div class="controls">
-        <button class="minus">−</button>
-        <input type="number" value="0" min="0">
-        <button class="plus">+</button>
-      </div>
-    </div>
-
-    <div class="product" data-price="100000">
-      <img src="sp2.jpg" alt="SP2">
-      <h3>Standee 10cm</h3>
-      <p>Acrylic double board Nền màu</p>
-      <p><b>100,000 VND</b></p>
-      <div class="controls">
-        <button class="minus">−</button>
-        <input type="number" value="0" min="0">
-        <button class="plus">+</button>
-      </div>
-    </div>
-
-    <div class="product" data-price="85000">
-      <img src="sp3.jpg" alt="SP3">
-      <h3>Layered keychain</h3>
       <p>Acrylic double board</p>
-      <p><b>85,000 VND</b></p>
-      <div class="controls">
-        <button class="minus">−</button>
+      <div class="price">70,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
         <input type="number" value="0" min="0">
         <button class="plus">+</button>
       </div>
     </div>
-  </div>
-
-  <div class="total" id="totalPrice">Tổng: 0 VND</div>
-  <button class="checkout-btn" id="checkoutBtn">Thanh toán</button>
-
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h2>Danh sách sản phẩm đã chọn</h2>
-      <ul id="selectedProducts"></ul>
-      <p id="popupTotal"></p>
-      <img class="qr" src="qrcode.png" alt="QR Code">
-      <br>
-      <button class="close-btn" id="closePopup">Đóng</button>
+    <div class="product" data-price="100000" data-name="Standee 10cm">
+      <img src="standee.png" alt="">
+      <h3>Standee 10cm</h3>
+      <p>Acrylic double board</p>
+      <div class="price">100,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
     </div>
-  </div>
-
-<script>
-  const products = document.querySelectorAll('.product');
-  const totalPriceEl = document.getElementById('totalPrice');
-  const checkoutBtn = document.getElementById('checkoutBtn');
-  const popup = document.getElementById('popup');
-  const selectedProductsEl = document.getElementById('selectedProducts');
-  const popupTotal = document.getElementById('popupTotal');
-  const closePopup = document.getElementById('closePopup');
-
-  products.forEach(product => {
-    const plus = product.querySelector('.plus');
-    const minus = product.querySelector('.minus');
-    const input = product.querySelector('input');
-
-    plus.addEventListener('click', () => {
-      input.value = parseInt(input.value) + 1;
-      updateTotal();
-    });
-    minus.addEventListener('click', () => {
-      if (parseInt(input.value) > 0) {
-        input.value = parseInt(input.value) - 1;
-        updateTotal();
-      }
-    });
-    input.addEventListener('change', updateTotal);
-  });
-
-  function updateTotal() {
-    let total = 0;
-    products.forEach(product => {
-      const price = parseInt(product.dataset.price);
-      const qty = parseInt(product.querySelector('input').value);
-      total += price * qty;
-    });
-    totalPriceEl.textContent = 'Tổng: ' + total.toLocaleString() + ' VND';
-  }
-
-  checkoutBtn.addEventListener('click', () => {
-    selectedProductsEl.innerHTML = '';
-    let total = 0;
-    products.forEach(product => {
-      const name = product.querySelector('h3').textContent;
-      const price = parseInt(product.dataset.price);
-      const qty = parseInt(product.querySelector('input').value);
-      if (qty > 0) {
-        total += price * qty;
-        const li = document.createElement('li');
-        li.textContent = `${name} x${qty} = ${(price*qty).toLocaleString()} VND`;
-        selectedProductsEl.appendChild(li);
-      }
-    });
-    popupTotal.textContent = 'Tổng: ' + total.toLocaleString() + ' VND';
-    popup.style.display = 'flex';
-  });
-
-  closePopup.addEventListener('click', () => {
-    popup.style.display = 'none';
-  });
-</script>
-
-</body>
-</html>
+    <div class="product" data-price="85000" data-name="Layered Keychain">
+      <img src="layered.png" alt="">
+      <h3>Layered Keychain</h3>
+      <p>Acrylic double board</p>
+      <div class="price">85,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
+    </div>
+    <div class="product" data-price="40000" data-name="Polaroid">
+      <img src="polaroid.png" alt="">
+      <h3>Polaroid</h3>
+      <p>Giấy nhũ 600gsm</p>
+      <div class="price">40,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
+      </div>
+    </div>
+    <div class="product" data-price="50000" data-name="Artprint A6">
+      <img src="artprint.png" alt="">
+      <h3>Artprint A6</h3>
+      <p>Giấy nhũ 300gsm</p>
+      <div class="price">50,000 VND</div>
+      <div class="qty-controls">
+        <button class="minus">-</button>
+        <input type="number" value="0" min="0">
+        <button class="plus">+</button>
