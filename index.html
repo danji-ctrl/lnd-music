@@ -1,43 +1,225 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanilla's Menu</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Danh sách sản phẩm — Checkout</title>
   <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root{
+      --accent:#e02424;
+      --muted:#666;
+      --card-bg:#fff;
+      --surface:#f6f7fb;
+      --max-width:1000px;
     }
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0;background:var(--surface); color:#111}
+    .wrap{max-width:var(--max-width); margin:18px auto; padding:16px}
 
-    body {
-      background-color: #ffffff; /* nền trắng */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    /* Top banner image */
+    .banner{height:140px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#111827, #374151); color:white; position:relative}
+    .banner svg{width:100%; height:100%; object-fit:cover}
+    .banner .title{position:absolute; font-size:18px; font-weight:700; left:20px}
 
-    .image-container {
-      width: 100%;
-      max-width: 600px; /* Giới hạn chiều rộng trên PC */
-    }
+    /* Products grid */
+    .products{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin:18px 0}
+    .card{background:var(--card-bg); border-radius:10px; padding:12px; box-shadow:0 6px 18px rgba(16,24,40,0.06); display:flex; gap:10px; align-items:center}
+    .thumb{width:76px; height:76px; border-radius:8px; background:linear-gradient(135deg,#f3f4f6,#e5e7eb); display:flex; align-items:center; justify-content:center; font-weight:700; color:#333}
+    .meta{flex:1}
+    .name{font-weight:600; margin-bottom:6px}
+    .muted{color:var(--muted); font-size:13px}
 
-    .image-container img {
-      width: 100%;
-      height: auto; /* tự động tỉ lệ */
-      display: block;
+    /* controls */
+    .controls{display:flex; flex-direction:column; gap:8px; align-items:flex-end}
+    .price-btn{background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600}
+    .qty{display:inline-flex; align-items:center; gap:6px; background:#fafafa; border-radius:8px; padding:4px}
+    .qty button{border:1px solid #e5e7eb; background:white; width:28px; height:28px; border-radius:6px; cursor:pointer}
+    .qty .num{min-width:28px; text-align:center; font-weight:600}
+
+    /* checkout bar */
+    .checkout{position:sticky; bottom:12px; background:var(--card-bg); border-radius:12px; padding:12px; box-shadow:0 10px 30px rgba(2,6,23,0.08); display:flex; gap:12px; align-items:center; justify-content:space-between}
+    .total{font-size:18px; font-weight:700}
+    .pay-btn{background:#0f172a; color:white; padding:10px 16px; border-radius:8px; border:none; cursor:pointer}
+
+    /* small responsive tweaks */
+    @media (max-width:520px){
+      .banner{height:110px}
+      .products{grid-template-columns:1fr}
+      .controls{align-items:flex-start}
     }
   </style>
 </head>
 <body>
-  <div class="image-container">
-    <!-- Đường dẫn ảnh: bạn thay bằng ảnh thực tế của bạn -->
-    <img src="Splash Screen 1.png" alt="Vanilla's Menu">
-    <audio id="audio" src="Waveletter.mp3" autoplay></audio>
+  <div class="wrap">
+    <!-- Top menu image (SVG placeholder). Replace with <img src="menu.jpg"> if you have a real image -->
+    <header class="banner" role="banner">
+      <svg viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stop-color="#0f172a" />
+            <stop offset="1" stop-color="#111827" />
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="200" fill="url(#g1)" />
+        <g fill-opacity="0.06" fill="#fff">
+          <circle cx="110" cy="40" r="120" />
+          <circle cx="380" cy="120" r="200" />
+          <circle cx="1000" cy="80" r="160" />
+        </g>
+      </svg>
+      <div class="title">Menu của cửa hàng</div>
+    </header>
 
+    <!-- Products list -->
+    <main>
+      <section class="products" id="productList" aria-live="polite"></section>
+    </main>
+
+    <!-- Checkout bar -->
+    <div class="checkout" id="checkoutBar">
+      <div>
+        <div class="muted">Tổng</div>
+        <div class="total" id="totalAmount">0 ₫</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="pay-btn" id="payBtn">Thanh toán</button>
+      </div>
+    </div>
   </div>
+
+  <script>
+    // Danh sách sản phẩm mẫu (thay, hoặc load từ server khi cần)
+    const products = [
+      {id:1, name:'Cafe Sữa Đá', price:25000},
+      {id:2, name:'Bánh Mì Chả', price:35000},
+      {id:3, name:'Trà Xanh', price:20000},
+      {id:4, name:'Sinh Tố Bơ', price:45000},
+      {id:5, name:'Cookie Socola', price:18000},
+      {id:6, name:'Nước Suối', price:10000}
+    ];
+
+    // Giữ trạng thái cart (số lượng của từng sản phẩm)
+    const cart = {}; // cart[productId] = quantity
+
+    const productListEl = document.getElementById('productList');
+    const totalAmountEl = document.getElementById('totalAmount');
+    const payBtn = document.getElementById('payBtn');
+
+    // format tiền (VND)
+    function formatVND(n){
+      // integer arithmetic to avoid floating issues
+      const s = Math.round(n).toString();
+      return s.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫';
+    }
+
+    // render danh sách sản phẩm
+    function renderProducts(){
+      productListEl.innerHTML = '';
+      products.forEach(p => {
+        const qty = cart[p.id] || 0;
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb">${p.name.split(' ').slice(0,2).map(w=>w[0]).join('')}</div>
+          <div class="meta">
+            <div class="name">${p.name}</div>
+            <div class="muted">Giá: ${formatVND(p.price)}</div>
+          </div>
+          <div class="controls">
+            <button class="price-btn" data-id="${p.id}">${formatVND(p.price)}</button>
+            <div class="qty" aria-label="Số lượng ${p.name}">
+              <button class="dec" data-id="${p.id}" aria-label="Giảm">−</button>
+              <div class="num" data-id-num="${p.id}">${qty}</div>
+              <button class="inc" data-id="${p.id}" aria-label="Tăng">+</button>
+            </div>
+          </div>
+        `;
+
+        productListEl.appendChild(card);
+      });
+
+      // add event listeners
+      document.querySelectorAll('.price-btn').forEach(btn => btn.addEventListener('click', onPriceClick));
+      document.querySelectorAll('.inc').forEach(b => b.addEventListener('click', onInc));
+      document.querySelectorAll('.dec').forEach(b => b.addEventListener('click', onDec));
+    }
+
+    function onPriceClick(e){
+      const id = Number(e.currentTarget.dataset.id);
+      // Khi bấm nút giá: tăng số lượng 1 vào cart
+      addQuantity(id, 1);
+      // thêm hiệu ứng nhỏ
+      e.currentTarget.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:180});
+    }
+
+    function onInc(e){
+      const id = Number(e.currentTarget.dataset.id);
+      addQuantity(id, 1);
+    }
+    function onDec(e){
+      const id = Number(e.currentTarget.dataset.id);
+      addQuantity(id, -1);
+    }
+
+    function addQuantity(id, delta){
+      const prod = products.find(x=>x.id===id);
+      if(!prod) return;
+      const prev = cart[id] || 0;
+      let next = prev + delta;
+      if(next < 0) next = 0;
+      cart[id] = next;
+
+      // update quantity badge
+      const numEl = document.querySelector(`[data-id-num=\"${id}\"]`);
+      if(numEl) numEl.textContent = next;
+
+      // recalc total
+      recalcTotal();
+    }
+
+    function recalcTotal(){
+      // use integer arithmetic (sum of integers)
+      let total = 0;
+      for(const idStr in cart){
+        const id = Number(idStr);
+        const qty = cart[id] || 0;
+        if(qty <= 0) continue;
+        const prod = products.find(x=>x.id===id);
+        if(!prod) continue;
+        total += Math.round(prod.price) * qty;
+      }
+      totalAmountEl.textContent = formatVND(total);
+    }
+
+    // Thanh toán: show modal / alert với tóm tắt
+    payBtn.addEventListener('click', ()=>{
+      // build summary
+      const lines = [];
+      let total = 0;
+      for(const idStr in cart){
+        const id = Number(idStr);
+        const qty = cart[id] || 0;
+        if(qty<=0) continue;
+        const prod = products.find(x=>x.id===id);
+        const subtotal = prod.price * qty;
+        lines.push(`${prod.name} × ${qty} = ${formatVND(subtotal)}`);
+        total += subtotal;
+      }
+      if(lines.length === 0){
+        alert('Giỏ hàng rỗng. Vui lòng chọn sản phẩm trước khi thanh toán.');
+        return;
+      }
+      lines.push('-------------------------');
+      lines.push('Tổng: ' + formatVND(total));
+      // You can replace alert with a custom modal or redirect to checkout page
+      alert(lines.join('\n'));
+    });
+
+    // init
+    renderProducts();
+    recalcTotal();
+
+  </script>
 </body>
 </html>
